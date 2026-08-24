@@ -37,10 +37,19 @@ public class JarUtils {
         File tempFile = null;
         
         try {
+            if (target.exists()) {
+                target.setWritable(true, true);
+                if (!target.delete()) {
+                    throw new IOException("Failed to replace existing JAR: " + target);
+                }
+            }
             
             tempFile = File.createTempFile(target.getName(), ".tmp", targetDir);
             
             output = new FileOutputStream(tempFile);
+            if (!tempFile.setReadOnly()) {
+                throw new IOException("Failed to make temporary JAR read-only: " + tempFile);
+            }
             
             byte[] buffer = new byte[8192];
             int bytesRead;
@@ -72,6 +81,7 @@ public class JarUtils {
         } catch (IOException e) {
             
             if (tempFile != null && tempFile.exists()) {
+                tempFile.setWritable(true, true);
                 if (!tempFile.delete()) {
                     Log.w(TAG, "Failed to delete temporary file: " + tempFile);
                 }

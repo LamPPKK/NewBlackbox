@@ -518,13 +518,16 @@
             android:name="top.niunaijun.blackbox.core.system.DaemonService"
             android:exported="false"
             android:process="@string/black_box_service_name"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps the virtual app runtime available while sandboxed apps are active" />
+        </service>
 
         <service
             android:name="top.niunaijun.blackbox.core.system.DaemonService$DaemonInnerService"
             android:exported="false"
-            android:process="@string/black_box_service_name"
-            android:foregroundServiceType="specialUse" />
+            android:process="@string/black_box_service_name" />
 
         <activity
             android:name=".app.LauncherActivity"
@@ -537,6 +540,9 @@
             android:exported="false"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Routes traffic for sandboxed apps through the user-approved VPN interface" />
             <intent-filter>
                 <action android:name="android.net.VpnService" />
             </intent-filter>
@@ -1604,203 +1610,453 @@
         <service
             android:name=".proxy.ProxyService$P0"
             android:exported="true"
-            android:process=":p0" />
+            android:process=":p0"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P1"
             android:exported="true"
-            android:process=":p1" />
+            android:process=":p1"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P2"
             android:exported="true"
-            android:process=":p2" />
+            android:process=":p2"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P3"
             android:exported="true"
-            android:process=":p3" />
+            android:process=":p3"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P4"
             android:exported="true"
-            android:process=":p4" />
+            android:process=":p4"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P5"
             android:exported="true"
-            android:process=":p5" />
+            android:process=":p5"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P6"
             android:exported="true"
-            android:process=":p6" />
+            android:process=":p6"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P7"
             android:exported="true"
-            android:process=":p7" />
+            android:process=":p7"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P8"
             android:exported="true"
-            android:process=":p8" />
+            android:process=":p8"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P9"
             android:exported="true"
-            android:process=":p9" />
+            android:process=":p9"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P10"
             android:exported="true"
-            android:process=":p10" />
+            android:process=":p10"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P11"
             android:exported="true"
-            android:process=":p11" />
+            android:process=":p11"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P12"
             android:exported="true"
-            android:process=":p12" />
+            android:process=":p12"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P13"
             android:exported="true"
-            android:process=":p13" />
+            android:process=":p13"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P14"
             android:exported="true"
-            android:process=":p14" />
+            android:process=":p14"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P15"
             android:exported="true"
-            android:process=":p15" />
+            android:process=":p15"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P16"
             android:exported="true"
-            android:process=":p16" />
+            android:process=":p16"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P17"
             android:exported="true"
-            android:process=":p17" />
+            android:process=":p17"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P18"
             android:exported="true"
-            android:process=":p18" />
+            android:process=":p18"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P19"
             android:exported="true"
-            android:process=":p19" />
+            android:process=":p19"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P20"
             android:exported="true"
-            android:process=":p20" />
+            android:process=":p20"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P21"
             android:exported="true"
-            android:process=":p21" />
+            android:process=":p21"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P22"
             android:exported="true"
-            android:process=":p22" />
+            android:process=":p22"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P23"
             android:exported="true"
-            android:process=":p23" />
+            android:process=":p23"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P24"
             android:exported="true"
-            android:process=":p24" />
+            android:process=":p24"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P25"
             android:exported="true"
-            android:process=":p25" />
+            android:process=":p25"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P26"
             android:exported="true"
-            android:process=":p26" />
+            android:process=":p26"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P27"
             android:exported="true"
-            android:process=":p27" />
+            android:process=":p27"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P28"
             android:exported="true"
-            android:process=":p28" />
+            android:process=":p28"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P29"
             android:exported="true"
-            android:process=":p29" />
+            android:process=":p29"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P30"
             android:exported="true"
-            android:process=":p30" />
+            android:process=":p30"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P31"
             android:exported="true"
-            android:process=":p31" />
+            android:process=":p31"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P32"
             android:exported="true"
-            android:process=":p32" />
+            android:process=":p32"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P33"
             android:exported="true"
-            android:process=":p33" />
+            android:process=":p33"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P34"
             android:exported="true"
-            android:process=":p34" />
+            android:process=":p34"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P35"
             android:exported="true"
-            android:process=":p35" />
+            android:process=":p35"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P36"
             android:exported="true"
-            android:process=":p36" />
+            android:process=":p36"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P37"
             android:exported="true"
-            android:process=":p37" />
+            android:process=":p37"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P38"
             android:exported="true"
-            android:process=":p38" />
+            android:process=":p38"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P39"
             android:exported="true"
-            android:process=":p39" />
+            android:process=":p39"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P40"
             android:exported="true"
-            android:process=":p40" />
+            android:process=":p40"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P41"
             android:exported="true"
-            android:process=":p41" />
+            android:process=":p41"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P42"
             android:exported="true"
-            android:process=":p42" />
+            android:process=":p42"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P43"
             android:exported="true"
-            android:process=":p43" />
+            android:process=":p43"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P44"
             android:exported="true"
-            android:process=":p44" />
+            android:process=":p44"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P45"
             android:exported="true"
-            android:process=":p45" />
+            android:process=":p45"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P46"
             android:exported="true"
-            android:process=":p46" />
+            android:process=":p46"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P47"
             android:exported="true"
-            android:process=":p47" />
+            android:process=":p47"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P48"
             android:exported="true"
-            android:process=":p48" />
+            android:process=":p48"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
         <service
             android:name=".proxy.ProxyService$P49"
             android:exported="true"
-            android:process=":p49" />
+            android:process=":p49"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts foreground execution requested by a sandboxed app" />
+        </service>
 
 
         <provider

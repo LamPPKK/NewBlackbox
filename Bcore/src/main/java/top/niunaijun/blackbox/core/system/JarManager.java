@@ -149,6 +149,9 @@ public class JarManager {
         
         
         if (targetFile.exists() && isFileValid(targetFile, jarDef)) {
+            if (targetFile.canWrite() && !targetFile.setReadOnly()) {
+                throw new IOException("Failed to make existing JAR read-only: " + targetFile);
+            }
             Log.d(TAG, "JAR file already exists and is valid: " + jarName);
             mJarCache.put(jarName, targetFile);
             return;

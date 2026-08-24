@@ -636,6 +636,10 @@ public class BActivityThread extends IBActivityThread.Stub {
             
             String sourceDir = appInfo.sourceDir;
             if (sourceDir != null) {
+                File codeFile = new File(sourceDir);
+                if (codeFile.canWrite() && !codeFile.setReadOnly()) {
+                    throw new SecurityException("Unable to make virtual APK read-only: " + sourceDir);
+                }
                 return new dalvik.system.PathClassLoader(sourceDir, ClassLoader.getSystemClassLoader());
             }
             

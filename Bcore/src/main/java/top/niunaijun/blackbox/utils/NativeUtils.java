@@ -71,10 +71,23 @@ public class NativeUtils {
 
             File libFile = new File(nativeLibDir, libName);
             if (libFile.exists() && libFile.length() == entry.getSize()) {
+                if (libFile.canWrite() && !libFile.setReadOnly()) {
+                    throw new IOException("Unable to make native library read-only: " + libFile);
+                }
                 Log.d(TAG, libName + " skip copy");
                 continue;
             }
+            if (libFile.exists()) {
+                libFile.setWritable(true, true);
+                if (!libFile.delete()) {
+                    throw new IOException("Unable to replace native library: " + libFile);
+                }
+            }
             FileOutputStream fos = new FileOutputStream(libFile);
+            if (!libFile.setReadOnly()) {
+                fos.close();
+                throw new IOException("Unable to make native library read-only: " + libFile);
+            }
             Log.d(TAG, "copy so " + entry.getName() + " of " + cpuArch);
             copySo(buffer, zipfile.getInputStream(entry), fos);
         }

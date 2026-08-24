@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +45,16 @@ class ListActivity : BaseActivity() {
 
         initSearchView()
         initViewModel()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewBinding.searchView.isSearchOpen) {
+                    viewBinding.searchView.closeSearch()
+                } else {
+                    finish()
+                }
+            }
+        })
     }
 
     private fun initSearchView() {
@@ -115,14 +126,6 @@ class ListActivity : BaseActivity() {
         val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         window.peekDecorView()?.run { imm.hideSoftInputFromWindow(windowToken, 0) }
         finish()
-    }
-
-    override fun onBackPressed() {
-        if (viewBinding.searchView.isSearchOpen) {
-            viewBinding.searchView.closeSearch()
-        } else {
-            super.onBackPressed()
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -18,6 +18,8 @@ import android.os.Binder;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
+import androidx.core.content.ContextCompat;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -71,8 +73,12 @@ public class BPackageManagerService extends IBPackageManagerService.Stub impleme
         filter.addAction("android.intent.action.PACKAGE_ADDED");
         filter.addAction("android.intent.action.PACKAGE_REMOVED");
         filter.addDataScheme("package");
-        BlackBoxCore.getContext()
-                .registerReceiver(mPackageChangedHandler, filter);
+        ContextCompat.registerReceiver(
+                BlackBoxCore.getContext(),
+                mPackageChangedHandler,
+                filter,
+                ContextCompat.RECEIVER_EXPORTED
+        );
     }
 
     private final BroadcastReceiver mPackageChangedHandler = new BroadcastReceiver() {

@@ -2,12 +2,13 @@ package top.niunaijun.blackbox.core.system.pm.installer;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import top.niunaijun.blackbox.core.env.BEnvironment;
 import top.niunaijun.blackbox.core.system.pm.BPackageSettings;
 import top.niunaijun.blackbox.entity.pm.InstallOption;
-import top.niunaijun.blackbox.utils.FileUtils;
 import top.niunaijun.blackbox.utils.NativeUtils;
 
 
@@ -28,15 +29,13 @@ public class CopyExecutor implements Executor {
             File origFile = new File(ps.pkg.baseCodePath);
             File newFile = BEnvironment.getBaseApkDir(ps.pkg.packageName);
             try {
-                if (option.isFlag(InstallOption.FLAG_URI_FILE)) {
-                    boolean b = FileUtils.renameTo(origFile, newFile);
-                    if (!b) {
-                        FileUtils.copyFile(origFile, newFile);
-                    }
-                } else {
-                    FileUtils.copyFile(origFile, newFile);
+                copyCodeFile(origFile, newFile);
+                if (option.isFlag(InstallOption.FLAG_URI_FILE)
+                        && !origFile.getCanonicalFile().equals(newFile.getCanonicalFile())) {
+                    // FLAG_URI_FILE sources are installer-owned temporary files. The old rename
+                    // path consumed them on success, so preserve that cleanup behavior.
+                    origFile.delete();
                 }
-                newFile.setReadOnly();
                 
                 ps.pkg.baseCodePath = newFile.getAbsolutePath();
             } catch (IOException e) {
@@ -47,5 +46,48 @@ public class CopyExecutor implements Executor {
             
         }
         return 0;
+    }
+
+    /**
+     * Copies code into a new, read-only inode. Android 14 rejects writable files used for
+     * dynamic code loading, so the destination must become read-only after it is opened and
+     * before any bytes are written through the already-open descriptor.
+     */
+    private static void copyCodeFile(File source, File target) throws IOException {
+        if (source.getCanonicalFile().equals(target.getCanonicalFile())) {
+            if (target.canWrite() && !target.setReadOnly()) {
+                throw new IOException("Unable to make code file read-only: " + target);
+            }
+            return;
+        }
+
+        File parent = target.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Unable to create code directory: " + parent);
+        }
+        if (target.exists()) {
+            target.setWritable(true, true);
+            if (!target.delete()) {
+                throw new IOException("Unable to replace code file: " + target);
+            }
+        }
+
+        try (FileInputStream input = new FileInputStream(source);
+             FileOutputStream output = new FileOutputStream(target)) {
+            if (!target.setReadOnly()) {
+                throw new IOException("Unable to make code file read-only: " + target);
+            }
+
+            byte[] buffer = new byte[16 * 1024];
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                output.write(buffer, 0, read);
+            }
+            output.getFD().sync();
+        } catch (IOException e) {
+            target.setWritable(true, true);
+            target.delete();
+            throw e;
+        }
     }
 }

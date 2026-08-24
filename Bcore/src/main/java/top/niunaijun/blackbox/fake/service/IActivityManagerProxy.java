@@ -2,6 +2,7 @@ package top.niunaijun.blackbox.fake.service;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.IServiceConnection;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.util.Log;
@@ -46,6 +49,7 @@ import top.niunaijun.blackbox.fake.hook.ScanClass;
 import top.niunaijun.blackbox.fake.service.base.PkgMethodProxy;
 import top.niunaijun.blackbox.fake.service.context.providers.ContentProviderStub;
 import top.niunaijun.blackbox.proxy.ProxyManifest;
+import top.niunaijun.blackbox.proxy.ProxyBroadcastReceiver;
 import top.niunaijun.blackbox.proxy.record.ProxyBroadcastRecord;
 import top.niunaijun.blackbox.proxy.record.ProxyPendingRecord;
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
@@ -500,12 +504,44 @@ public class IActivityManagerProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             int type = (int) args[0];
-            Intent[] intents = (Intent[]) args[getIntentsIndex(args)];
+            int intentsIndex = getIntentsIndex(args);
+            Intent[] intents = (Intent[]) args[intentsIndex];
             MethodParameterUtils.replaceFirstAppPkg(args);
+
+            if (type == ActivityManagerCompat.INTENT_SENDER_ACTIVITY
+                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                int optionsIndex = findOptionsIndex(method, intentsIndex);
+                if (optionsIndex >= 0) {
+                    Bundle existingOptions = (Bundle) args[optionsIndex];
+                    ActivityOptions activityOptions = ActivityOptions.makeBasic();
+                    activityOptions.setPendingIntentCreatorBackgroundActivityStartMode(
+                            ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    );
+                    Bundle backgroundLaunchOptions = activityOptions.toBundle();
+                    if (existingOptions == null) {
+                        args[optionsIndex] = backgroundLaunchOptions;
+                    } else {
+                        existingOptions.putAll(backgroundLaunchOptions);
+                    }
+                }
+            }
 
             for (int i = 0; i < intents.length; i++) {
                 Intent intent = intents[i];
                 switch (type) {
+                    case ActivityManagerCompat.INTENT_SENDER_BROADCAST:
+                        Intent broadcastShadow = new Intent();
+                        broadcastShadow.setComponent(new ComponentName(
+                                BlackBoxCore.getHostPkg(),
+                                ProxyBroadcastReceiver.class.getName()
+                        ));
+                        ProxyBroadcastRecord.saveStub(
+                                broadcastShadow,
+                                intent,
+                                BActivityThread.getUserId()
+                        );
+                        intents[i] = broadcastShadow;
+                        break;
                     case ActivityManagerCompat.INTENT_SENDER_ACTIVITY:
                         Intent shadow = new Intent();
                         shadow.setComponent(new ComponentName(BlackBoxCore.getHostPkg(), ProxyManifest.getProxyPendingActivity(BActivityThread.getAppPid())));
@@ -536,6 +572,16 @@ public class IActivityManagerProxy extends ClassInvocationStub {
             } else {
                 return 5;
             }
+        }
+
+        private int findOptionsIndex(Method method, int intentsIndex) {
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            for (int i = intentsIndex + 1; i < parameterTypes.length; i++) {
+                if (Bundle.class.isAssignableFrom(parameterTypes[i])) {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 
@@ -744,15 +790,11 @@ public class IActivityManagerProxy extends ClassInvocationStub {
     public static class setServiceForeground extends MethodHook {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            
-            
-            for (int i = args.length - 1; i >= 0; i--) {
-                if (args[i] instanceof Integer) {
-                    args[i] = 0; 
-                    break;
-                }
-            }
-            return method.invoke(who, args);
+            // The real AMS only knows the host ProxyService token/component. Forwarding the
+            // guest token makes Android 14+ reject the promotion even though ProxyService was
+            // already promoted synchronously before guest dispatch. Keep the host's valid
+            // placeholder foreground notification and acknowledge the guest call locally.
+            return null;
         }
     }
 

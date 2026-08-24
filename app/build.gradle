@@ -7,7 +7,7 @@ android {
 
     namespace 'top.niunaijun.blackboxa'
     compileSdk rootProject.ext.compileSdkVersion
-    ndkVersion = "29.0.13846066"
+    ndkVersion rootProject.ext.ndkVersion
     defaultConfig {
         applicationId "top.niunaijun.blackbox"
         minSdk rootProject.ext.minSdk
@@ -72,14 +72,14 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
-    implementation "androidx.preference:preference-ktx:1.1.1"
+    implementation libs.preference.ktx
     
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.runtime.ktx
 
     
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation libs.recyclerview
     implementation 'com.gitee.cbfg5210:RVAdapter:0.3.7'
 
     
@@ -100,6 +100,6 @@ dependencies {
 
 
     
-    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation libs.work.runtime
 
 }

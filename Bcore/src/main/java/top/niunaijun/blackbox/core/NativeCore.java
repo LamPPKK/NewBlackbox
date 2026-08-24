@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.annotation.Keep;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import dalvik.system.DexFile;
@@ -156,9 +158,12 @@ public class NativeCore {
             File tempDexFile = File.createTempFile("fallback_empty", ".dex");
             tempDexFile.deleteOnExit();
             
-            java.io.FileOutputStream fos = new java.io.FileOutputStream(tempDexFile);
-            fos.write(emptyDexBytes);
-            fos.close();
+            try (FileOutputStream fos = new FileOutputStream(tempDexFile)) {
+                if (!tempDexFile.setReadOnly()) {
+                    throw new IOException("Unable to make fallback DEX read-only");
+                }
+                fos.write(emptyDexBytes);
+            }
             
             
             DexFile dexFile = new DexFile(tempDexFile);

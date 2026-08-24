@@ -25,19 +25,21 @@ This enhanced edition includes bug fixes, stability improvements, and Android 14
 *   **RAM**: 2GB minimum recommended.
 *   **Architecture**: ARMv7a, ARM64-v8a, x86.
 
+For the current Android 14–16 development baseline, architecture, build commands, compatibility changes and known limits are documented in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
 ## Build Instructions
 
 ### Prerequisites
-*   Android Studio (Arctic Fox or newer)
-*   JDK 17
-*   Android SDK 34+
-*   NDK (Version 29.0.13846066)
+*   Android Studio with Android Gradle Plugin 8.13 support
+*   Full JDK 21 (including `jlink`)
+*   Android SDK 36
+*   NDK 28.2.13676358
 
 ### Building from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/NewBlackbox.git
+git clone https://github.com/LamPPKK/NewBlackbox.git
 cd NewBlackbox
 
 # Build Debug APK

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,6 +60,16 @@ class FakeManagerActivity : BaseActivity() {
 
         initSearchView()
         initViewModel()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewBinding.searchView.isSearchOpen) {
+                    viewBinding.searchView.closeSearch()
+                } else {
+                    finish()
+                }
+            }
+        })
     }
 
     private fun disableFakeLocation(item: FakeLocationBean,position:Int) {
@@ -158,14 +169,6 @@ class FakeManagerActivity : BaseActivity() {
         finish()
     }
 
-
-    override fun onBackPressed() {
-        if (viewBinding.searchView.isSearchOpen) {
-            viewBinding.searchView.closeSearch()
-        } else {
-            super.onBackPressed()
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)

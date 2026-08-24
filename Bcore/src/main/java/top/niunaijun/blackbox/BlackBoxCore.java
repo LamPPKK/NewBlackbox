@@ -81,7 +81,7 @@ public class BlackBoxCore extends ClientConfiguration {
 
     private static final BlackBoxCore sBlackBoxCore = new BlackBoxCore();
     private static Context sContext;
-    
+
     
     static {
         try {
@@ -473,8 +473,16 @@ public class BlackBoxCore extends ClientConfiguration {
             return false;
         }
     }
-    
-    
+
+    private void startDaemonService(Context context, Intent intent) {
+        if (BuildCompat.isOreo()) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
+
+
     private void startBlackProcess() {
         try {
             Slog.d(TAG, "Starting black process...");
@@ -512,27 +520,14 @@ public class BlackBoxCore extends ClientConfiguration {
                         }
                     }
                     
-                    if (BuildCompat.isOreo()) {
-                        getContext().startForegroundService(intent);
-                        Slog.d(TAG, "Started DaemonService as foreground service");
-                        serviceStarted = true;
-                    } else {
-                        getContext().startService(intent);
-                        Slog.d(TAG, "Started DaemonService as regular service");
-                        serviceStarted = true;
-                    }
+                    startDaemonService(getContext(), intent);
+                    Slog.d(TAG, "Started DaemonService");
+                    serviceStarted = true;
                     
                 } catch (SecurityException e) {
                     if (e.getMessage() != null && e.getMessage().contains("MissingForegroundServiceTypeException")) {
-                        Slog.w(TAG, "Foreground service type missing, falling back to regular service");
-                        try {
-                            getContext().startService(intent);
-                            Slog.d(TAG, "Started DaemonService as regular service (fallback)");
-                            serviceStarted = true;
-                        } catch (Exception fallbackEx) {
-                            Slog.e(TAG, "Failed to start DaemonService even as regular service: " + fallbackEx.getMessage(), fallbackEx);
-                            handleServiceStartFailure(retry, maxRetries, e);
-                        }
+                        Slog.e(TAG, "DaemonService foreground-service type was rejected", e);
+                        handleServiceStartFailure(retry, maxRetries, e);
                     } else if (e.getMessage() != null && e.getMessage().contains("process is bad")) {
                         Slog.w(TAG, "Process is bad, attempting to recover and retry");
                         handleProcessBadError(retry, maxRetries);
@@ -606,11 +601,7 @@ public class BlackBoxCore extends ClientConfiguration {
                 public void run() {
                     try {
                         Slog.d(TAG, "Executing delayed retry for DaemonService");
-                        if (BuildCompat.isOreo()) {
-                            getContext().startForegroundService(intent);
-                        } else {
-                            getContext().startService(intent);
-                        }
+                        startDaemonService(getContext(), intent);
                         Slog.d(TAG, "Delayed retry successful");
                     } catch (Exception e) {
                         Slog.e(TAG, "Delayed retry failed: " + e.getMessage());
@@ -727,7 +718,7 @@ public class BlackBoxCore extends ClientConfiguration {
             if (alternativeContext != null) {
                 Intent intent = new Intent();
                 intent.setClass(alternativeContext, DaemonService.class);
-                alternativeContext.startService(intent);
+                startDaemonService(alternativeContext, intent);
                 Slog.d(TAG, "Alternative context startup successful");
                 return;
             }
@@ -741,7 +732,7 @@ public class BlackBoxCore extends ClientConfiguration {
             if (appContext != null && appContext != getContext()) {
                 Intent intent = new Intent();
                 intent.setClass(appContext, DaemonService.class);
-                appContext.startService(intent);
+                startDaemonService(appContext, intent);
                 Slog.d(TAG, "Application context startup successful");
                 return;
             }
@@ -908,27 +899,14 @@ public class BlackBoxCore extends ClientConfiguration {
                                 }
                             }
                             
-                            if (BuildCompat.isOreo()) {
-                                getContext().startForegroundService(intent);
-                                Slog.d(TAG, "Started DaemonService as foreground service in server process");
-                                serviceStarted = true;
-                            } else {
-                                getContext().startService(intent);
-                                Slog.d(TAG, "Started DaemonService as regular service in server process");
-                                serviceStarted = true;
-                            }
+                            startDaemonService(getContext(), intent);
+                            Slog.d(TAG, "Started DaemonService in server process");
+                            serviceStarted = true;
                             
                         } catch (SecurityException e) {
                             if (e.getMessage() != null && e.getMessage().contains("MissingForegroundServiceTypeException")) {
-                                Slog.w(TAG, "Foreground service type missing in server process, falling back to regular service");
-                                try {
-                                    getContext().startService(intent);
-                                    Slog.d(TAG, "Started DaemonService as regular service in server process (fallback)");
-                                    serviceStarted = true;
-                                } catch (Exception fallbackEx) {
-                                    Slog.e(TAG, "Failed to start DaemonService in server process even as regular service: " + fallbackEx.getMessage(), fallbackEx);
-                                    handleServerServiceStartFailure(retry, maxRetries, fallbackEx);
-                                }
+                                Slog.e(TAG, "DaemonService foreground-service type was rejected in server process", e);
+                                handleServerServiceStartFailure(retry, maxRetries, e);
                             } else if (e.getMessage() != null && e.getMessage().contains("process is bad")) {
                                 Slog.w(TAG, "Server process is bad, attempting to recover and retry");
                                 handleServerProcessBadError(retry, maxRetries);
@@ -1925,11 +1903,7 @@ public class BlackBoxCore extends ClientConfiguration {
                             intent.setClass(getContext(), DaemonService.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             
-                            if (BuildCompat.isOreo()) {
-                                getContext().startForegroundService(intent);
-                            } else {
-                                getContext().startService(intent);
-                            }
+                            startDaemonService(getContext(), intent);
                         }
                         
                     } catch (Exception e) {
@@ -1953,7 +1927,7 @@ public class BlackBoxCore extends ClientConfiguration {
             if (alternativeContext != null) {
                 Intent intent = new Intent();
                 intent.setClass(alternativeContext, DaemonService.class);
-                alternativeContext.startService(intent);
+                startDaemonService(alternativeContext, intent);
                 Slog.d(TAG, "Alternative context startup successful for server process");
                 return;
             }
@@ -1967,7 +1941,7 @@ public class BlackBoxCore extends ClientConfiguration {
             if (appContext != null && appContext != getContext()) {
                 Intent intent = new Intent();
                 intent.setClass(appContext, DaemonService.class);
-                appContext.startService(intent);
+                startDaemonService(appContext, intent);
                 Slog.d(TAG, "Application context startup successful for server process");
                 return;
             }
@@ -2008,11 +1982,7 @@ public class BlackBoxCore extends ClientConfiguration {
                             intent.setClass(getContext(), DaemonService.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             
-                            if (BuildCompat.isOreo()) {
-                                getContext().startForegroundService(intent);
-                            } else {
-                                getContext().startService(intent);
-                            }
+                            startDaemonService(getContext(), intent);
                             Slog.d(TAG, "Delayed server service start successful");
                         } catch (Exception e) {
                             Slog.e(TAG, "Delayed server service start failed: " + e.getMessage());
@@ -2039,11 +2009,7 @@ public class BlackBoxCore extends ClientConfiguration {
                 public void run() {
                     try {
                         Slog.d(TAG, "Executing delayed server retry for DaemonService");
-                        if (BuildCompat.isOreo()) {
-                            getContext().startForegroundService(intent);
-                        } else {
-                            getContext().startService(intent);
-                        }
+                        startDaemonService(getContext(), intent);
                         Slog.d(TAG, "Delayed server retry successful");
                     } catch (Exception e) {
                         Slog.e(TAG, "Delayed server retry failed: " + e.getMessage());

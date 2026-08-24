@@ -4,7 +4,7 @@ package top.niunaijun.blackboxa.view.fake
 import android.app.Activity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import org.osmdroid.config.Configuration
@@ -17,10 +17,11 @@ import top.niunaijun.blackbox.entity.location.BLocation
 import top.niunaijun.blackboxa.databinding.ActivityOsmdroidBinding
 import top.niunaijun.blackboxa.util.inflate
 import top.niunaijun.blackboxa.util.toast
+import top.niunaijun.blackboxa.view.base.BaseActivity
 
 
 
-class FollowMyLocationOverlay : AppCompatActivity() {
+class FollowMyLocationOverlay : BaseActivity() {
     val TAG: String = "FollowMyLocationOverlay"
 
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
@@ -81,10 +82,12 @@ class FollowMyLocationOverlay : AppCompatActivity() {
 
         mapController.setCenter(startPoint)
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
-    }
 
-    override fun onBackPressed() {
-        finishWithResult(startPoint)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finishWithResult(startPoint)
+            }
+        })
     }
 
     override fun onResume() {

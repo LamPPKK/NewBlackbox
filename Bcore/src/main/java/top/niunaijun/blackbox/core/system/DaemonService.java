@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -44,16 +45,19 @@ public class DaemonService extends Service {
         Log.d(TAG, "DaemonService onStartCommand");
         
         try {
-            
-            Intent innerIntent = new Intent(this, DaemonInnerService.class);
-            startService(innerIntent);
-            
-            
             if (BuildCompat.isOreo()) {
                 if (!startForegroundService()) {
-                    Log.w(TAG, "Failed to start foreground service, falling back to regular service");
-                    return START_STICKY;
+                    Log.e(TAG, "Failed to promote DaemonService to the foreground; stopping");
+                    stopSelf(startId);
+                    return START_NOT_STICKY;
                 }
+            }
+
+            // The legacy inner-service notification workaround is only useful before
+            // Android O. Modern Android requires the foreground notification to remain.
+            if (!BuildCompat.isOreo()) {
+                Intent innerIntent = new Intent(this, DaemonInnerService.class);
+                startService(innerIntent);
             }
             
             Log.d(TAG, "DaemonService started successfully");
@@ -61,8 +65,8 @@ public class DaemonService extends Service {
             
         } catch (Exception e) {
             Log.e(TAG, "Error starting DaemonService: " + e.getMessage(), e);
-            
-            return START_STICKY;
+            stopSelf(startId);
+            return START_NOT_STICKY;
         }
     }
 
@@ -102,7 +106,15 @@ public class DaemonService extends Service {
         try {
             Notification notification = createNotification();
             if (notification != null) {
-                startForeground(NOTIFY_ID, notification);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    startForeground(
+                            NOTIFY_ID,
+                            notification,
+                            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                    );
+                } else {
+                    startForeground(NOTIFY_ID, notification);
+                }
                 Log.d(TAG, "Foreground service started successfully");
                 return true;
             } else {

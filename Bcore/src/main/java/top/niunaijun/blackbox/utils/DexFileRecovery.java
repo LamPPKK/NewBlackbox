@@ -306,6 +306,9 @@ public class DexFileRecovery {
                     File extractedDex = new File(extractDir, "classes_" + System.currentTimeMillis() + ".dex");
                     try (InputStream input = zipFile.getInputStream(dexEntry);
                          FileOutputStream output = new FileOutputStream(extractedDex)) {
+                        if (!extractedDex.setReadOnly()) {
+                            throw new IOException("Failed to make recovered DEX read-only");
+                        }
                         
                         byte[] buffer = new byte[8192];
                         int bytesRead;
